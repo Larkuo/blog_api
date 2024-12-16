@@ -16,9 +16,8 @@ def create_user():
     if not data or not all(key in data for key in ('username', 'email', 'password', 'role')):
         return jsonify({'error': 'Invalid input'}), 422
 
-    # if get_user_by_username(data['username']) | get_user_by_email(data['email']):
-    # if get_user_by_email(data['email']):
-        # return jsonify({'error': 'User already exists'}), 403
+    if get_user_by_username(data['username']) or get_user_by_email(data['email']):
+        return jsonify({'error': 'User already exists'}), 403
 
     new_user = create_new_user(data)
     return user_schema.jsonify(new_user), 201

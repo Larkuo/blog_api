@@ -4,11 +4,11 @@ from app.extensions import db
 def get_user_by_id(id):
     return db.session.get(User, id=id)
 
-def get_user_by_username(value):
-    return db.session.get(User, username=value).first()
+def get_user_by_username(username):
+    return User.query.filter_by(username=username).first()
 
-def get_user_by_email(value):
-    return db.session.get(User, email=value).first()
+def get_user_by_email(email):
+    return User.query.filter_by(email=email).first()
 
 def create_new_user(data):    
     new_user = User(username=data['username'], email=data['email'], role=data['role'])
