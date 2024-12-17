@@ -2,6 +2,10 @@ from functools import wraps
 from flask import request, jsonify
 import os
 
+from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
+
+from app.services.user_service import get_user_by_id
+
 ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "secure_admin_token")
 
 def admin_required(func):
@@ -45,3 +49,18 @@ def auth_required(f):
             return jsonify({"error": "Unauthorized"}), 401
         return f(*args, **kwargs)
     return decorated_function
+
+def jwt_required_role(required_role):
+    def decorator(function):
+        @wraps(function)
+        def wrapper(*args, **kwargs):
+            verify_jwt_in_request()
+            user_id = get_jwt_identity()
+            user = get_user_by_id(user_id)
+
+            if not user or user.role != required_role:
+                return jsonify({'error': 'Unauthorized'}), 403
+
+            return function(*args, **kwargs)
+        return wrapper
+    return decorator

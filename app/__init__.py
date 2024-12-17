@@ -1,5 +1,5 @@
 from flask import Flask
-from app.extensions import db, ma, swagger, migrate
+from app.extensions import db, ma, swagger, migrate, jwt
 from app.config import Config
 
 def create_app(config_class=Config):
@@ -11,6 +11,7 @@ def create_app(config_class=Config):
     ma.init_app(app)
     swagger.init_app(app)
     migrate.init_app(app, db)
+    jwt.init_app(app)
     
     # Register blueprints
     from app.api.users import user_blueprint
